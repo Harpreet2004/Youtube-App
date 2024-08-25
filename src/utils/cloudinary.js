@@ -1,5 +1,8 @@
-import {v3 as cloudinary} from "cloudinary"
-import {fs} from "fs"
+import cloudinary from "cloudinary";
+// import pkg from 'cloudinary';
+// const {v3: cloudinary} = pkg;
+// import {fs} from "node:fs";
+import * as fs from 'node:fs';
 
 // Configuration
 cloudinary.config({ 
