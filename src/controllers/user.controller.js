@@ -131,7 +131,7 @@ const loginUser = asyncHandler(async (req,res) => {
         secure: true,
         httpsOnly: true
     }
-
+    console.log(req.cookie);
     return res
     .status(200)
     .cookie("accessToken",accessToken,options)
