@@ -154,8 +154,8 @@ const logoutUser = asyncHandler(async (req,res) => {
     User.findByIdAndUpdate(
         req.user._id,
         {
-            $set: {
-                refreshToken: undefined
+            $unset: {
+                refreshToken: 1 //this removes the field from document
             }
         },
         {
@@ -201,8 +201,8 @@ const refreshAccessToken = asyncHandler( async(req,res) => {
     
         return res
         .status(200)
-        .req.cookie("accessToken",accessToken,options)
-        .req.cookie("refreshToken",newRefreshToken,options)
+        .cookie("accessToken",accessToken,options)
+        .cookie("refreshToken",newRefreshToken,options)
         .json(
             new ApiResponse(
                 200,
@@ -219,12 +219,12 @@ const refreshAccessToken = asyncHandler( async(req,res) => {
 
 const changePassword = asyncHandler(async(req,res) => {
     const {oldPassword,newPassword} = req.body;
+    // console.log(req.body)
 
     const user = await User.findById(req.user?._id);
 
-    const isPasswordCorrect = await isPasswordCorrect(oldPassword);
-
-    if(!isPasswordCorrect) {
+    const isPassCorrect = await user.isPasswordCorrect(oldPassword);
+    if(!isPassCorrect) {
         throw new ApiError(400,"Password is not correct");
     }
 
@@ -375,8 +375,10 @@ const getUserChannelProfile = asyncHandler(async(req,res) => {
                     $size: "$subscribedTo"
                 },
                 isSubscribed: {
-                    $cnd: {
-                        if: {$in: [req.user?._id,"$subscribers"]}
+                    $cond: {
+                        if: {$in: [req.user?._id,"$subscribers"]},
+                        then: true,
+                        else: false
                     }
                 }
             }
@@ -408,7 +410,7 @@ const getUserChannelProfile = asyncHandler(async(req,res) => {
 })
 
 const getWatchHistory = asyncHandler(async(req,res) => {
-    const user = await user.aggregate([
+    const user = await User.aggregate([
         {
             $match:{
                 _id: new mongoose.Types.ObjectId(req.user._id)
