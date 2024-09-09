@@ -16,7 +16,7 @@ app.use(cookieParser());
 
 //importing routes
 import userRouter from "./routes/user.routes.js"
-import healthcheckRouter from "./routes/healthCheck.routes.js"
+import healthCheckRouter from "./routes/healthCheck.routes.js"
 import tweetRouter from "./routes/tweet.routes.js"
 import subscriptionRouter from "./routes/subscription.routes.js"
 import videoRouter from "./routes/video.routes.js"
@@ -26,7 +26,7 @@ import playlistRouter from "./routes/playlist.routes.js"
 import dashboardRouter from "./routes/dashboard.routes.js"
 
 //routes declaration
-app.use("/api/v1/health", healthcheckRouter)
+app.use("/api/v1/health", healthCheckRouter)
 app.use("/api/v1/users", userRouter)
 app.use("/api/v1/tweets", tweetRouter)
 app.use("/api/v1/subscriptions", subscriptionRouter)
