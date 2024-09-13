@@ -77,16 +77,18 @@ const getUserTweets = asyncHandler(async (req, res) => {
         owner: new mongoose.Types.ObjectId(userId)
     });
 
-    if(!findAllUserTweets.length === 0) {
+    if(findAllUserTweets.length === 0) {
         throw new ApiError(400,"Not able to find the tweets");
     }
 
     return res
     .status(200)
     .json(
+        new ApiResponse(
         200,
         findAllUserTweets,
         "All tweets fetched successfully"
+        )
     )
 
 })
@@ -113,7 +115,7 @@ const updateTweet = asyncHandler(async (req, res) => {
             }
         },
         {new: true}
-    ).select("-owner")
+    );
 
     if(!tweet){
         throw new ApiError(500,"There was some error while updating the tweet")
@@ -145,9 +147,9 @@ const deleteTweet = asyncHandler(async (req, res) => {
     }
 
     return res
-    .status(
+    .status(200)
+    .json(
         200,
-        tweetDelete,
         "Tweet is deleted successfully"
     )
 })
