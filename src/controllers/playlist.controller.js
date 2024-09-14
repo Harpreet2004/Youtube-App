@@ -140,15 +140,35 @@ const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
         video: videoId
     })
     
+    //if video does not exist then error else remove it
     if(!playlist) {
         throw new ApiError(400,"Cannot find the specified video in the playlist");
     }
 
     //if exists then remove
-
+    const deleteVideofromPlaylist = await Playlist.findByIdAndUpdate(
+        videoId,
+        {
+            $pull:{
+                videos: videoId
+            }
+        }
+    )
     
-    //then success message
+    if(!deleteVideofromPlaylist){
+        throw new ApiError(500,"Something went wrong while removing video from playlist");
+    }
 
+    //then success message
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(
+            200,
+            deleteVideofromPlaylist,
+            "Video is successfully removed"
+        )
+    );
 })
 
 const deletePlaylist = asyncHandler(async (req, res) => {
